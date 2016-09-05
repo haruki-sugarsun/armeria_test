@@ -42,7 +42,10 @@ public class Main {
             System.err.println(echoSyncClient.echo("Hello from sync-client"));
 
             // Async clients
-            AsyncMethodCallback<String> handler = new AsyncMethodCallback<String>() {
+            EchoService.AsyncIface echoAsyncClient = Clients.newClient(
+                    "tbinary+h2c://localhost:8080/echo",
+                    EchoService.AsyncIface.class);
+            echoAsyncClient.echo("Hello from async-client", new AsyncMethodCallback<String>() {
                 @Override
                 public void onComplete(String response) {
                     System.err.println(response);
@@ -52,15 +55,21 @@ public class Main {
                 public void onError(Exception exception) {
                     exception.printStackTrace();
                 }
-            };
-            EchoService.AsyncIface echoAsyncClient = Clients.newClient(
-                    "tbinary+h2c://localhost:8080/echo",
-                    EchoService.AsyncIface.class);
-            echoAsyncClient.echo("Hello from async-client", handler);
+            });
             echoAsyncClient = Clients.newClient(
                     "tbinary+h2c://localhost:8081/echo",
                     EchoService.AsyncIface.class);
-            echoAsyncClient.echo("Hello from async-client", handler);
+            echoAsyncClient.echo("Hello from async-client", new AsyncMethodCallback<String>() {
+                @Override
+                public void onComplete(String response) {
+                    System.err.println(response);
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
         } catch (TException e) {
             e.printStackTrace();
         }
