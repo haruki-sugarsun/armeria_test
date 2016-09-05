@@ -15,3 +15,6 @@ gradle-app.setting
 
 # IntelliJ IDEA
 .idea
+
+# Generated sources
+src/generated/

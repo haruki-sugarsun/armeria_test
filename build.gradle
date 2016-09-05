@@ -1,3 +1,19 @@
+// For Thrift compiler.
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1"
+    }
+}
+
+plugins {
+    id "org.jruyi.thrift" version "0.3.1"
+}
+
 apply plugin: 'java'
 
 apply plugin: 'application'
@@ -19,4 +35,12 @@ dependencies {
 tasks.withType(JavaCompile) {
     sourceCompatibility '1.8'
     targetCompatibility '1.8'
+}
+
+compileThrift {
+    outputDir = file('src/generated/thrift')
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/generated/thrift/gen-java'
 }
