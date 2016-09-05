@@ -52,40 +52,41 @@ public class Main {
                         int n = Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
 
                         if (n <= 1) {
-                            // Return immediately.
+                            // Base cases. Return immediately.
                             return text(n == 1 ? "1" : "0");
-                        } else {
-                            // Call the dependencies,
-                            HttpResponse ppReq = callRecursive(n - 2);
-                            HttpResponse pReq = callRecursive(n - 1);
-                            DefaultHttpResponse res = new DefaultHttpResponse();
-
-                            // and return concurrently.
-
-                            ppReq.aggregate().handle(voidFunction((ppMes, throwable) -> {
-                                pReq.aggregate().handle(voidFunction((pMes, throwable1) -> {
-                                    try {
-                                        int ppVal = Integer.parseInt(
-                                                ppMes.content().toStringAscii().replaceAll("[ \\n]", ""));
-                                        int pVal = Integer.parseInt(
-                                                pMes.content().toStringAscii().replaceAll("[ \\n]", ""));
-                                        res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
-                                                (ppVal + pVal) + "\n");
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
-                                                -1 + "\n");
-                                    }
-                                }));
-                            }));
-                            return res;
                         }
+
+                        // Recursive cases. Call the dependencies recursively,
+                        HttpResponse ppReq = callRecursive(n - 2);
+                        HttpResponse pReq = callRecursive(n - 1);
+                        DefaultHttpResponse res = new DefaultHttpResponse();
+
+                        // and return concurrently. Note that HttpResponse implements HttpResponseWriter,
+                        // so the object works in concurrent ways.
+                        ppReq.aggregate().handle(voidFunction((ppMes, throwable) -> {
+                            pReq.aggregate().handle(voidFunction((pMes, throwable1) -> {
+                                try {
+                                    int ppVal = Integer.parseInt(
+                                            ppMes.content().toStringAscii().replaceAll("[ \\n]", ""));
+                                    int pVal = Integer.parseInt(
+                                            pMes.content().toStringAscii().replaceAll("[ \\n]", ""));
+                                    res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
+                                            (ppVal + pVal) + "\n");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
+                                            -1 + "\n");
+                                }
+                            }));
+                        }));
+                        return res;
                     }
                 });
 
         Server server = sb.build();
         server.start();
 
+        // Test requests to the server.
         IntStream.range(0, 20).forEach(i -> {
                     try {
                         AggregatedHttpMessage response = null;
