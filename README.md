@@ -5,7 +5,7 @@ Tested with Gradle 2.8 and Armeria 0.24.1.Final
 
 
 ## How to run
-Execute
+Take a look at `Main.java` and execute
 
     $ ./gradlew run
 
