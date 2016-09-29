@@ -8,16 +8,11 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    javaAgent
-}
-
 dependencies {
     compile group: 'com.linecorp.armeria', name: 'armeria', version: '0.27.0.Final'
 
     // Logging
     runtime group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
-
 }
 
 // Require Java 8 to build the project.
