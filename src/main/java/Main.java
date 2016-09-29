@@ -26,7 +26,7 @@ public class Main {
 
         ServerBuilder sb = new ServerBuilder()
                 .port(8080, SessionProtocol.HTTP)
-                .port(8081, SessionProtocol.HTTP)
+                .port(8081, SessionProtocol.HTTP)  // Use another port for recursive calls.
                 .serviceAt("/hello", new HttpService() {
                     @Override
                     public HttpResponse serve(ServiceRequestContext ctx, HttpRequest req) {
@@ -70,12 +70,10 @@ public class Main {
                                             ppMes.content().toStringAscii().replaceAll("[ \\n]", ""));
                                     int pVal = Integer.parseInt(
                                             pMes.content().toStringAscii().replaceAll("[ \\n]", ""));
-                                    res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
-                                            (ppVal + pVal) + "\n");
+                                    writeAsText(res, (ppVal + pVal));
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8,
-                                            -1 + "\n");
+                                    writeAsText(res, -1);
                                 }
                             }));
                         }));
@@ -101,8 +99,17 @@ public class Main {
         );
     }
 
+    // Utilities.
     private static HttpResponse callRecursive(int fibArg) {
         return client.get("/fib/" + fibArg);
+    }
+
+    private static void writeAsText(DefaultHttpResponse res, int i) {
+        writeAsText(res, String.valueOf(i));
+    }
+
+    private static void writeAsText(DefaultHttpResponse res, String s) {
+        res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8, s + "\n");
     }
 
     private static HttpResponse text(int i) {
@@ -111,7 +118,7 @@ public class Main {
 
     private static HttpResponse text(String s) {
         DefaultHttpResponse res = new DefaultHttpResponse();
-        res.respond(HttpStatus.OK, MediaType.PLAIN_TEXT_UTF_8, s + "\n");
+        writeAsText(res, s);
         return res;
     }
 }
