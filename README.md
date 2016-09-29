@@ -16,6 +16,7 @@ or
 ## More Examples
 The `master` branch (https://github.com/haruki-sugarsun/armeria_test) contains a rather large example. Please see
 * https://github.com/haruki-sugarsun/armeria_test/tree/simple_hello
+  * https://github.com/haruki-sugarsun/armeria_test/tree/hello_with_decorators
 * https://github.com/haruki-sugarsun/armeria_test/tree/simple_thrift
 
 for more small and simple examples.
