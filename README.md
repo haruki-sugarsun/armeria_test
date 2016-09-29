@@ -14,7 +14,7 @@ or
     $ gradlew.bat run
 
 ## More Examples
-The `master` branch contains a rather large example. Please see
+The `master` branch (https://github.com/haruki-sugarsun/armeria_test) contains a rather large example. Please see
 * https://github.com/haruki-sugarsun/armeria_test/tree/simple_hello
 * https://github.com/haruki-sugarsun/armeria_test/tree/simple_thrift
 
